@@ -1,0 +1,49 @@
+<body>
+    <h1>Habit Tracker</h1>
+    
+    <!-- Add habit form -->
+    <form action="/habits" method="POST">
+      <input type="text" name="habitName" placeholder="Enter habit name">
+      <button type="submit">Add Habit</button>
+    </form>
+  
+    <% habits.forEach(habit => { %>
+      <h2><%= habit.name %></h2>
+  
+      <!-- Display 7 days of habit status -->
+      <table>
+        <tr>
+          <% for (let i = 6; i >= 0; i--) { %>
+            <% const date = new Date(); %>
+            <% date.setDate(date.getDate() - i); %>
+            <th><%= formatDate(date) %></th>
+          <% } %>
+        </tr>
+        <tr>
+          <% for (let i = 6; i >= 0; i--) { %>
+            <% const date = new Date(); %>
+            <% date.setDate(date.getDate() - i); %>
+            <td>
+              <form action="/habits/<%= habit.id %>" method="POST">
+                <input type="hidden" name="statusDate" value="<%= formatDate(date) %>">
+                <select name="status">
+                  <option value="none" <%= habit.getStatus(date) === 'none' ? 'selected' : '' %>>None</option>
+                  <option value="done" <%= habit.getStatus(date) === 'done' ? 'selected' : '' %>>Done</option>
+                  <option value="not-done" <%= habit.getStatus(date) === 'not-done' ? 'selected' : '' %>>Not Done</option>
+                </select>
+                <button type="submit">Save</button>
+              </form>
+            </td>
+          <% } %>
+        </tr>
+      </table>
+    <% }); %>
+  
+    <script>
+      function formatDate(date) {
+        const options = { weekday: 'short', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString(undefined, options);
+      }
+    </script>
+  </body>
+  
